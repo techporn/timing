@@ -1,5 +1,6 @@
 import re
 
+#  Define error handling types
 ERR_NONE = 0
 ERR_IGNORE = 1
 ERR_EXCEPTION = 2
@@ -80,15 +81,15 @@ class TimingParser:
             elif i == self.TOKEN_L:
                 binary.append(0)
 
-            # トークン以外だった場合
+            # When get something other than a token. (e.g. white space)
             else:
-                if error == ERR_NONE:        binary.append(None)
-                elif error == ERR_IGNORE:    pass
-                elif error == ERR_EXCEPTION: raise TypeError()
+                if error == ERR_NONE:        binary.append(None) # List contains None 
+                elif error == ERR_IGNORE:    pass                
+                elif error == ERR_EXCEPTION: raise TypeError("ParseError")
 
         return binary
 
-def read_signal(filename) -> list:
+def read_timing(filename) -> list:
     signals = []
     parser = TimingParser()
 
@@ -97,8 +98,8 @@ def read_signal(filename) -> list:
         for i in parser.parse(t):
             label, data = i
             signals.append((label, data))
-            
+
     return signals
 
 if __name__ == "__main__":
-    print(read_signal("chart-ccw"))
+    print(read_timing("chart-ccw"))

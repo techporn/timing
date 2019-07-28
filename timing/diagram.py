@@ -10,10 +10,11 @@ class Diagram:
 
     def add_timing(self, label: str, data: list):
         self.timing.append((label, data))
+        self.x_length = len(data)
 
-        l = len(data)
-        if self.x_length < l:
-            self.x_length = l
+        # l = len(data)
+        # if self.x_length < l:
+        #     self.x_length = l
 
     def save(self, path: str):
         self.fig.savefig(path)
@@ -25,19 +26,20 @@ class Diagram:
             signals {list} -- Signal object list. 
         """
 
-        self.fig, axis = plt.subplots(len(self.timing), sharex=False)  # 複数グラフを表示するときに使う.この場合は縦に3つ並べて、x軸を共有
+        self.fig, axis = plt.subplots(len(self.timing), sharex=True)  # 複数グラフを表示するときに使う.この場合は縦に3つ並べて、x軸を共有
         self.x = list(range(self.x_length))
 
-        # axisがひとつ
-        if len(axis) == 1:
-            label, data = self.timing[0]
-            self._plot_signal(axis, label, data)    # オプションを設定する
-
+        print(type(axis))
         # axisが複数
-        else:
+        if isinstance(axis, np.ndarray):
             for i, a in enumerate(axis):
                 label, data = self.timing[i]
                 self._plot_signal(a, label, data)   # オプションを設定する
+
+        # axisがひとつ
+        else:
+            label, data = self.timing[0]
+            self._plot_signal(axis, label, data)    # オプションを設定する
 
         plt.show()
 
@@ -58,7 +60,7 @@ class Diagram:
         axes.spines['top'].set_visible(False)      # 上枠非表示
         axes.spines['bottom'].set_visible(False)   # 下枠非表示
 
-        axes.grid(linestyle='-')                   # グリッド線表示
+        # axes.grid(which="both", linestyle='--')                   # グリッド線表示
         axes.set_ylabel(label, rotation=0)         # デフォルトだと回転してしまうのでrotation=0とする
         axes.yaxis.set_label_coords(-0.1, 0.5)     # y軸のラベルの位置を調整する
 
@@ -69,6 +71,9 @@ class Diagram:
 
 def main():
     d = Diagram()
-    d.add_timing("test", [0,1,0,1,0])
-    d.add_timing("test2", [1,0,1,0,1])
+    d.add_timing("Q1", [0,1,0,1,0,1,1])
+    d.add_timing("Q2", [0,0,1,1,0,0,0])
+    d.add_timing("Q3", [0,0,0,1,1,0,0])
     d.plot()
+
+main()
