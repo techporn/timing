@@ -76,4 +76,4 @@ def main():
     d.add_timing("Q3", [0,0,0,1,1,0,0])
     d.plot()
 
-main()
+# main()
